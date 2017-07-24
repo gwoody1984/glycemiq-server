@@ -6,7 +6,7 @@ from glycemiq_server import create_app
 
 from flask_script import Manager
 
-app = create_app(os.getenv('GLYCEMIQ_ENV') or 'dev')
+app = create_app()
 manager = Manager(app)
 
 if __name__ == '__main__':
