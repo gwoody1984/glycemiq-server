@@ -16,5 +16,7 @@ glycemiq_server/config.json
 ## File-based project format:
 *.iws
 
-# Byte-compiled / optimized /DLL files
-*__pycache__/*
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*$py.class
