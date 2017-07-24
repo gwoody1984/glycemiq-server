@@ -1,21 +1,9 @@
-import os
 import configparser
+import json
+import os
 
 config = configparser.ConfigParser()
-basedir = os.path.abspath(os.path.dirname(__file__))
 
-
-class DevelopmentConfig():
-    DEBUG = True
-
-    with open('config.json')
-
-
-class ProductionConfig():
-    DEBUG = False
-
-
-config_by_env = dict(
-    dev=DevelopmentConfig,
-    prod=ProductionConfig,
-)
+if os.path.exists('config.json'):
+    with open('config.json', 'r') as file:
+        config = json.load(file)
