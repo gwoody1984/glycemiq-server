@@ -1,0 +1,7 @@
+// Place a copy of this file named config.json into the glycemiq_server directory
+// to manage local configuration
+{
+  "FITBIT_CLIENT_SECRET": "",
+  "FITBIT_CLIENT_ID": "",
+  "FITBIT_AUTH_CALLBACK_URL": ""
+}
