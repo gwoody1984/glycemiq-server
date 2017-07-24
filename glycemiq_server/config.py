@@ -3,10 +3,12 @@ import json
 import os
 
 config = configparser.ConfigParser()
+basedir = os.path.abspath(os.path.dirname(__file__))
+jsonConfig = os.path.join(basedir, 'config.json')
 
-if os.path.exists('config.json'):
-    with open('config.json', 'r') as file:
+if os.path.exists(jsonConfig):
+    with open(jsonConfig, 'r') as file:
         config = json.load(file)
 
-def config_section(section):
-    return config[section]
+def config_as_dict(section):
+    return dict(config.get(section))
