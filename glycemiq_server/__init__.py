@@ -1,11 +1,11 @@
 from flask import Flask
 
-from .config import config_by_env
+from .config import config
 
 
-def create_app(environment):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config_by_env[environment])
+    app.config.from_object(config['FLASK'])
 
     from .fitbit import fitbit as fitbit_blueprint
     app.register_blueprint(fitbit_blueprint, url_prefix='/fitbit')
