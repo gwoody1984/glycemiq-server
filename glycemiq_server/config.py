@@ -9,6 +9,8 @@ jsonConfig = os.path.join(basedir, 'config.json')
 if os.path.exists(jsonConfig):
     with open(jsonConfig, 'r') as file:
         config = json.load(file)
+else:
+    raise IOError('config.json not present in ' + basedir)
 
 def config_as_dict(section):
     return dict(config.get(section))
