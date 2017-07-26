@@ -11,6 +11,7 @@ from ..config import config_as_dict
 
 config = config_as_dict('FITBIT')
 server = OAuth2Server(config['CLIENT_ID'], config['CLIENT_SECRET'], config['AUTH_CALLBACK_URL'])
+tokens = {}
 
 
 @fitbit.route('/auth')
@@ -28,9 +29,12 @@ def authorize_result():
     code = request.args.get('code')
     state = request.args.get('state')
     error = None
+    token_string = ""
     if code:
         try:
             token = server.fitbit.client.fetch_access_token(code)
+            tokens.update({ token['user_id']: dict(token) })
+            token_string = "<p>token: " + token['user_id'] + "</p>"
         except MissingTokenError:
             error = _fmt_failure(
                 'Missing access token parameter.</br>Please check that '
@@ -40,7 +44,14 @@ def authorize_result():
     else:
         error = _fmt_failure('Unknown error while authenticating')
 
-    return error if error else server.success_html
+    return error if error else token_string + server.success_html
+
+
+@fitbit.route('/subscribe')
+def subscribe():
+    user_id = request.args.get('user_id')
+    client_token = tokens.get(user_id)
+    server.fitbit.subscription()
 
 
 def _fmt_failure(message):
