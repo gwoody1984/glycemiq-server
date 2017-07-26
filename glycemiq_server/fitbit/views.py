@@ -1,8 +1,8 @@
 import sys
 import traceback
 
-from flask import redirect, request
-from oauthlib.oauth2 import MismatchingStateError, MissingTokenError
+from flask import redirect, request, abort
+from oauthlib.oauth2 import MismatchingStateError, MissingTokenError, OAuth2Token
 
 from . import fitbit
 from .OAuth2Server import OAuth2Server
@@ -55,6 +55,15 @@ def subscribe(user_id):
     return "Subscription has been set"
 
 
+@fitbit.route('/notification', methods=['GET'])
+def notification_verification():
+    verify_code = request.args.get('verify')
+    if verify_code == config['SUBSCRIPTION_VERIFICATION_CODE']:
+        return ('', 204)
+    else:
+        abort(404)
+
+
 @fitbit.route('/notification', methods=['POST'])
 def notification():
     return ('', 204)
@@ -67,4 +76,5 @@ def _fmt_failure(message):
 
 
 def _update_token(token):
-    tokens.update({token['user_id']: dict(token)})
+    if token is OAuth2Token:
+        tokens.update({token['user_id']: dict(token)})
