@@ -33,7 +33,7 @@ def authorize_result():
     if code:
         try:
             token = server.fitbit.client.fetch_access_token(code)
-            tokens.update({ token['user_id']: dict(token) })
+            _update_token(token)
             token_string = "<p>token: " + token['user_id'] + "</p>"
         except MissingTokenError:
             error = _fmt_failure(
@@ -47,14 +47,24 @@ def authorize_result():
     return error if error else token_string + server.success_html
 
 
-@fitbit.route('/subscribe')
-def subscribe():
-    user_id = request.args.get('user_id')
+@fitbit.route('/subscribe/<string:user_id>')
+def subscribe(user_id):
     client_token = tokens.get(user_id)
-    server.fitbit.subscription()
+    server.set_fitbit_client(client_token, _update_token)
+    server.fitbit.subscription(user_id, '2')  # MAGIC STRING
+    return "Subscription has been set"
+
+
+@fitbit.route('/notification', methods=['POST'])
+def notification():
+    return ('', 204)
 
 
 def _fmt_failure(message):
     tb = traceback.format_tb(sys.exc_info()[2])
     tb_html = '<pre>%s</pre>' % ('\n'.join(tb)) if tb else ''
     return server.failure_html % (message, tb_html)
+
+
+def _update_token(token):
+    tokens.update({token['user_id']: dict(token)})
