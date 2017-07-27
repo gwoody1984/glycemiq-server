@@ -4,11 +4,16 @@ import traceback
 from flask import redirect, request, abort
 from oauthlib.oauth2 import MismatchingStateError, MissingTokenError
 
+from glycemiq_server.fitbit import NotificationActor
 from . import fitbit
 from .OAuth2Server import OAuth2Server
+from .hmac_sha1 import make_digest
+from .. import actor_sys
 from ..config import config_as_dict
+from ..log_manager import logManager
 
 
+logger = logManager.get_logger(__name__)
 config = config_as_dict('FITBIT')
 server = OAuth2Server(config['CLIENT_ID'], config['CLIENT_SECRET'], config['AUTH_CALLBACK_URL'])
 tokens = {}
@@ -65,9 +70,25 @@ def notification_verification():
 
 @fitbit.route('/notification', methods=['POST'])
 def notification():
-    #TODO: verify signature
+    body = request.form
+    logger.debug('fitbit notification body: %s', body)
+    print(body)
+
     sig = request.headers.get('X-Fitbit-Signature')
+    computed_sig = make_digest(body, config['CLIENT_SECRET'])
+    logger.debug('fitbit sig: %s; computed sig: %s', sig, computed_sig)
+    print(sig)
+
+    actor = actor_sys.createActor(NotificationActor)
+    actor_sys.tell(actor, body)
     return '', 204
+
+    # if (sig == computed_sig):
+    #     actor = actor_sys.createActor(NotificationActor)
+    #     actor_sys.tell(actor, body)
+    #     return '', 204
+    # else:
+    #     abort(404)
 
 
 def _fmt_failure(message):

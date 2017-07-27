@@ -1,9 +1,13 @@
 // Place a copy of this file named config.json into the glycemiq_server directory
 // to manage local configuration
 {
-  "FLASK":{
+  "FLASK": {
     "DEBUG": false
   },
+  "LOGGING": {
+    "LOG_LEVEL": "DEBUG",
+    "LOG_FORMAT": "%(asctime)s - %(levelname)s - %(module)s:%(name)s - %(message)s"
+  }
   "FITBIT": {
     "CLIENT_ID": "",
     "CLIENT_SECRET": "",
