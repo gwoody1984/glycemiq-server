@@ -12,5 +12,16 @@ if os.path.exists(jsonConfig):
 else:
     raise IOError('config.json not present in ' + basedir)
 
+
 def config_as_dict(section):
     return dict(config.get(section))
+
+
+def config_as_obj(section):
+    return _Config(config_as_dict(section))
+
+
+class _Config:
+    def __init__(self, kvp):
+        for item in kvp.keys():
+            setattr(self, item, kvp[item])
