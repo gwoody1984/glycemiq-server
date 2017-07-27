@@ -72,12 +72,10 @@ def notification_verification():
 def notification():
     body = request.form
     logger.debug('fitbit notification body: %s', body)
-    print(body)
 
     sig = request.headers.get('X-Fitbit-Signature')
     computed_sig = make_digest(body, config['CLIENT_SECRET'])
     logger.debug('fitbit sig: %s; computed sig: %s', sig, computed_sig)
-    print(sig)
 
     actor_sys = actorSystemManager.get_actor_system()
     actor = actor_sys.createActor(NotificationActor)
