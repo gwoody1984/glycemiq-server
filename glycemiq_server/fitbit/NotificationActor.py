@@ -16,6 +16,6 @@ class NotificationActor(Actor):
         if isinstance(msg, ActorExitRequest):
             return
 
-        logger.debug(ast.literal_eval(msg))
+        logger.debug(str(msg))
         self.send(self.myAddress, ActorExitRequest())
 

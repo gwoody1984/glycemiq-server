@@ -70,8 +70,7 @@ def notification_verification():
 
 @fitbit.route('/notification', methods=['POST'])
 def notification():
-    body = str(request.json)
-    logger.debug('fitbit notification body: %s', body)
+    logger.debug('fitbit notification body: %s', request.json)
     logger.debug('get_data: %s', request.get_data())
 
     sig = request.headers.get('X-Fitbit-Signature')
@@ -81,7 +80,7 @@ def notification():
     if (sig == computed_sig):
         actor_sys = actorSystemManager.get_actor_system()
         actor = actor_sys.createActor(NotificationActor)
-        actor_sys.tell(actor, body)
+        actor_sys.tell(actor, request.json)
         return '', 204
     else:
         abort(404)
