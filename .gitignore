@@ -5,6 +5,7 @@
 .idea/**/*.iml
 .idea/misc.xml
 glycemiq_server/config.json
+**/*.db
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
