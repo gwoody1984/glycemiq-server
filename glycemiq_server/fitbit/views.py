@@ -2,7 +2,7 @@ import sys
 import traceback
 
 from flask import redirect, request, abort
-from oauthlib.oauth2 import MismatchingStateError, MissingTokenError, OAuth2Token
+from oauthlib.oauth2 import MismatchingStateError, MissingTokenError
 
 from . import fitbit
 from .OAuth2Server import OAuth2Server
@@ -27,7 +27,6 @@ def authorize_result():
     to fetch the access_token.
     """
     code = request.args.get('code')
-    state = request.args.get('state')
     error = None
     token_string = ""
     if code:
@@ -59,14 +58,16 @@ def subscribe(user_id):
 def notification_verification():
     verify_code = request.args.get('verify')
     if verify_code == config['SUBSCRIPTION_VERIFICATION_CODE']:
-        return ('', 204)
+        return '', 204
     else:
         abort(404)
 
 
 @fitbit.route('/notification', methods=['POST'])
 def notification():
-    return ('', 204)
+    #TODO: verify signature
+    sig = request.headers.get('X-Fitbit-Signature')
+    return '', 204
 
 
 def _fmt_failure(message):
@@ -76,5 +77,4 @@ def _fmt_failure(message):
 
 
 def _update_token(token):
-    if token is OAuth2Token:
-        tokens.update({token['user_id']: dict(token)})
+    tokens.update({token['user_id']: dict(token)})
