@@ -4,13 +4,13 @@ import traceback
 from flask import redirect, request, abort
 from oauthlib.oauth2 import MismatchingStateError, MissingTokenError
 
-from glycemiq_server.fitbit import NotificationActor
 from . import fitbit
 from .OAuth2Server import OAuth2Server
+from .NotificationActor import NotificationActor
 from .hmac_sha1 import make_digest
-from .. import actor_sys
 from ..config import config_as_dict
 from ..log_manager import logManager
+from ..actor_system_manager import actorSystemManager
 
 
 logger = logManager.get_logger(__name__)
@@ -79,6 +79,7 @@ def notification():
     logger.debug('fitbit sig: %s; computed sig: %s', sig, computed_sig)
     print(sig)
 
+    actor_sys = actorSystemManager.get_actor_system()
     actor = actor_sys.createActor(NotificationActor)
     actor_sys.tell(actor, body)
     return '', 204

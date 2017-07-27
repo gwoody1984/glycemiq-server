@@ -1,5 +1,7 @@
 import logging
 
+import sys
+
 from .config import config_as_dict
 
 
@@ -9,7 +11,7 @@ class _LogManager:
 
         formatter = logging.Formatter(fmt=self.config['LOG_FORMAT'])
 
-        self.handler = logging.StreamHandler()  # TODO: make this come from config
+        self.handler = logging.StreamHandler(sys.stdout)  # TODO: make this come from config
         self.handler.setFormatter(formatter)
 
     def get_logger(self, name):
