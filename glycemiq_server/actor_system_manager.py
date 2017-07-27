@@ -7,7 +7,7 @@ class _ActorSystemManager:
 
     def get_actor_system(self):
         if self.actor_system is None:
-            self.actor_system = ActorSystem('multiprocTCPBase')
+            self.actor_system = ActorSystem()  # 'multiprocTCPBase')
 
         return self.actor_system
 

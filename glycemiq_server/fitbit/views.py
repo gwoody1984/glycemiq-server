@@ -70,7 +70,7 @@ def notification_verification():
 
 @fitbit.route('/notification', methods=['POST'])
 def notification():
-    body = request.form
+    body = str(dict(request.form))
     logger.debug('fitbit notification body: %s', body)
 
     sig = request.headers.get('X-Fitbit-Signature')
