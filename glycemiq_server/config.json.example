@@ -6,7 +6,7 @@
   },
   "LOGGING": {
     "LOG_LEVEL": "DEBUG",
-    "LOG_FORMAT": "%(asctime)s - %(levelname)s - %(module)s:%(name)s - %(message)s"
+    "LOG_FORMAT": "%(asctime)s - %(levelname)s - %(module)s:%(name)s:%(lineno)d - %(message)s"
   }
   "FITBIT": {
     "CLIENT_ID": "",

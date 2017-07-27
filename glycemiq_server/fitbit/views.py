@@ -70,11 +70,14 @@ def notification_verification():
 
 @fitbit.route('/notification', methods=['POST'])
 def notification():
-    body = str(dict(request.form))
+    body = str(request.data)
     logger.debug('fitbit notification body: %s', body)
+    logger.debug('form: %s', request.form)
+    logger.debug('json: %s', request.json)
+    logger.debug('get_data: %s', request.get_data())
 
     sig = request.headers.get('X-Fitbit-Signature')
-    computed_sig = make_digest(body, config['CLIENT_SECRET'])
+    computed_sig = make_digest(body, config['CLIENT_SECRET']+'&')
     logger.debug('fitbit sig: %s; computed sig: %s', sig, computed_sig)
 
     actor_sys = actorSystemManager.get_actor_system()
