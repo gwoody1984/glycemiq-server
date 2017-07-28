@@ -6,4 +6,4 @@ class UserToken(db.Model):
     user_id = db.Column(db.String(6), nullable=False)
     access_token = db.Column(db.Text, nullable=False)
     refresh_token = db.Column(db.Text, nullable=False)
-    expires_at = db.Column(db.Text, nullable=False)
+    expires_at = db.Column(db.Integer, nullable=False)

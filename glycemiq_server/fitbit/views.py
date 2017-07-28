@@ -1,7 +1,7 @@
 import sys
 import traceback
 
-from flask import redirect, request, abort
+from flask import redirect, request, abort, url_for
 from oauthlib.oauth2 import MismatchingStateError, MissingTokenError
 
 from . import fitbit
@@ -34,12 +34,11 @@ def authorize_result():
     """
     code = request.args.get('code')
     error = None
-    token_string = ""
+    token = None
     if code:
         try:
             token = server.fitbit.client.fetch_access_token(code)
             _update_token(token)
-            token_string = "<p>token: " + token['user_id'] + "</p>"
         except MissingTokenError:
             error = _fmt_failure(
                 'Missing access token parameter.</br>Please check that '
@@ -49,7 +48,7 @@ def authorize_result():
     else:
         error = _fmt_failure('Unknown error while authenticating')
 
-    return error if error else token_string + server.success_html
+    return error if error else redirect(url_for('fitbit.subscribe', user_id=token['user_id']))
 
 
 @fitbit.route('/subscribe/<string:user_id>')
@@ -57,7 +56,7 @@ def subscribe(user_id):
     client_token = UserToken.query.filter_by(user_id=user_id).first()
     server.set_fitbit_client(client_token, _update_token)
     server.fitbit.subscription(user_id, '2')  # MAGIC STRING
-    return "Subscription has been set"
+    return "<h2>Success!</h2><p>You may close this window.</p>"
 
 
 @fitbit.route('/notification', methods=['GET'])
@@ -90,22 +89,16 @@ def notification():
 def _fmt_failure(message):
     tb = traceback.format_tb(sys.exc_info()[2])
     tb_html = '<pre>%s</pre>' % ('\n'.join(tb)) if tb else ''
-    return server.failure_html % (message, tb_html)
+    return """<h1>ERROR: %s</h1><br/><h3>You can close this window</h3>%s""" % (message, tb_html)
 
 
 def _update_token(token):
     user_token = UserToken.query.filter_by(user_id=token['user_id']).first()
     if user_token is None:
-        user_token = UserToken(user_id=token['user_id'],
-                               access_token=token['access_token'],
-                               refresh_token=token['refresh_token'],
-                               expires_at=token['expires_at'])
-
+        user_token = UserToken()
         db.session.add(user_token)
-    else:
-        user_token.user_id = token['user_id']
-        user_token.access_token=token['access_token']
-        user_token.refresh_token=token['refresh_token']
-        user_token.expires_at=token['expires_at']
+
+    for key in token.keys():
+        setattr(user_token, key, token[key])
 
     db.session.commit()

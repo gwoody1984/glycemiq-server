@@ -5,11 +5,6 @@ class OAuth2Server:
 
     def __init__(self, client_id, client_secret, redirect_uri):
         """ Initialize the FitbitOauth2Client """
-        self.success_html = """
-            <h1>You are now authorized to access the Fitbit API!</h1>
-            <br/><h3>You can close this window</h3>"""
-        self.failure_html = """
-            <h1>ERROR: %s</h1><br/><h3>You can close this window</h3>%s"""
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri
