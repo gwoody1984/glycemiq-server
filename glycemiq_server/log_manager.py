@@ -2,7 +2,7 @@ import logging
 
 import sys
 
-from .config import config_as_dict
+from glycemiq_server.config import config_as_dict
 
 
 class _LogManager:

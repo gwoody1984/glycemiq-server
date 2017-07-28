@@ -4,10 +4,10 @@ import traceback
 from flask import redirect, request, abort, url_for
 from oauthlib.oauth2 import MismatchingStateError, MissingTokenError
 
-from . import fitbit
-from .OAuth2Server import OAuth2Server
-from .NotificationActor import NotificationActor
-from .hmac_sha1 import make_digest
+from glycemiq_server.fitbit import fitbit
+from glycemiq_server.fitbit.OAuth2Server import OAuth2Server
+from glycemiq_server.fitbit.NotificationActor import NotificationActor
+from glycemiq_server.fitbit.hmac_sha1 import make_digest
 from glycemiq_server.config import config_as_dict
 from glycemiq_server.log_manager import logManager
 from glycemiq_server.actor_system_manager import actorSystemManager

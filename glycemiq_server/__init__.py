@@ -1,10 +1,8 @@
-import os
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from thespian.actors import ActorSystem
 
-from .config import config_as_obj
+from glycemiq_server.config import config_as_obj
 
 
 db = SQLAlchemy()
