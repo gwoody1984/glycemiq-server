@@ -6,7 +6,7 @@ from glycemiq_server.models import UserToken
 
 class OAuth2Server:
 
-    def __init__(self, client_id, client_secret, redirect_uri):
+    def __init__(self, client_id, client_secret, redirect_uri=None):
         """ Initialize the FitbitOauth2Client """
         self._client_id = client_id
         self._client_secret = client_secret
@@ -74,6 +74,15 @@ class OAuth2Server:
         """
         url, _ = self._fitbit.client.authorize_token_url()
         return url
+
+    def get_activities(self, user_id, date):
+        return self._fitbit.time_series('activities', user_id=user_id, end_date=date)
+
+    def get_sleep(self, user_id, date):
+        return self._fitbit.time_series('sleep', user_id=user_id, end_date=date)
+
+    def get_heart_rate(self, user_id, date):
+        return self._fitbit.time_series('heart', user_id=user_id, end_date=date)
 
     def _update_token(self, token):
         user_token = UserToken.query.filter_by(user_id=token['user_id']).first()
