@@ -7,3 +7,6 @@ class UserToken(db.Model):
     access_token = db.Column(db.Text, nullable=False)
     refresh_token = db.Column(db.Text, nullable=False)
     expires_at = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return "<UserToken '{}': '{}'>".format(self.id, self.user_id)
