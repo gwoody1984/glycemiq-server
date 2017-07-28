@@ -30,13 +30,16 @@ class NotificationActor(Actor):
         if not isinstance(msg, list):
             return
 
-        logger.debug(str(msg))
-        msg['date'] = datetime.strptime(msg['date'], "%Y-%m-%d").date()
-        msg['subscriptionId'] = int(msg['subscriptionId'])
-        self._save_notification(msg)
+        try:
+            logger.debug(str(msg))
+            msg['date'] = datetime.strptime(msg['date'], "%Y-%m-%d").date()
+            msg['subscriptionId'] = int(msg['subscriptionId'])
+            self._save_notification(msg)
 
-        for item in msg:
-            self._route_message(item)
+            for item in msg:
+                self._route_message(item)
+        except Exception as e:
+            logger.exception("Unknown error: {}".format(e))
 
     def _route_message(self, msg):
         child_type = self.children[msg['collectionType']]
