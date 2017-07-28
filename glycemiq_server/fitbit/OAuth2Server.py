@@ -23,9 +23,9 @@ class OAuth2Server:
 
 
     def set_fitbit_client(self, token, refresh_callback):
-        access_token = token['access_token']
-        refresh_token = token['refresh_token']
-        expires_at = token['expires_at']
+        access_token = token.access_token
+        refresh_token = token.refresh_token
+        expires_at = token.expires_at
 
         self.fitbit = Fitbit(
             self.client_id,

@@ -8,15 +8,16 @@ from . import fitbit
 from .OAuth2Server import OAuth2Server
 from .NotificationActor import NotificationActor
 from .hmac_sha1 import make_digest
-from ..config import config_as_dict
-from ..log_manager import logManager
-from ..actor_system_manager import actorSystemManager
+from glycemiq_server import db
+from glycemiq_server.models import UserToken
+from glycemiq_server.config import config_as_dict
+from glycemiq_server.log_manager import logManager
+from glycemiq_server.actor_system_manager import actorSystemManager
 
 
 logger = logManager.get_logger(__name__)
 config = config_as_dict('FITBIT')
 server = OAuth2Server(config['CLIENT_ID'], config['CLIENT_SECRET'], config['AUTH_CALLBACK_URL'])
-tokens = {}
 
 
 @fitbit.route('/auth')
@@ -53,7 +54,7 @@ def authorize_result():
 
 @fitbit.route('/subscribe/<string:user_id>')
 def subscribe(user_id):
-    client_token = tokens.get(user_id)
+    client_token = UserToken.query.filter_by(user_id=user_id).first()
     server.set_fitbit_client(client_token, _update_token)
     server.fitbit.subscription(user_id, '2')  # MAGIC STRING
     return "Subscription has been set"
@@ -93,4 +94,18 @@ def _fmt_failure(message):
 
 
 def _update_token(token):
-    tokens.update({token['user_id']: dict(token)})
+    user_token = UserToken.query.filter_by(user_id=token['user_id']).first()
+    if user_token is None:
+        user_token = UserToken(user_id=token['user_id'],
+                               access_token=token['access_token'],
+                               refresh_token=token['refresh_token'],
+                               expires_at=token['expires_at'])
+
+        db.session.add(user_token)
+    else:
+        user_token.user_id = token['user_id']
+        user_token.access_token=token['access_token']
+        user_token.refresh_token=token['refresh_token']
+        user_token.expires_at=token['expires_at']
+
+    db.session.commit()
