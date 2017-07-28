@@ -20,7 +20,7 @@ class Notification(db.Model):
     date =db.Column(db.Date, nullable=False)
     user_id = db.Column(db.String(6), nullable=False)
     owner_type = db.Column(db.String(25), nullable=False)
-    subscription_id = db.Column(db.Integer, nullable=False)
+    subscription_id = db.Column(db.String(25), nullable=False)
 
     def __repr__(self):
         return "<Notification '{:%Y-%m-%d}' '{}': '{}'>".format(self.date, self.collection_Type, self.user_id)

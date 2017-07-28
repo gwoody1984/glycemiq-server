@@ -33,7 +33,6 @@ class NotificationActor(Actor):
         try:
             logger.debug(str(msg))
             msg['date'] = datetime.strptime(msg['date'], "%Y-%m-%d").date()
-            msg['subscriptionId'] = int(msg['subscriptionId'])
             self._save_notification(msg)
 
             for item in msg:
