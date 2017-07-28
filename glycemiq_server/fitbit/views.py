@@ -8,8 +8,6 @@ from . import fitbit
 from .OAuth2Server import OAuth2Server
 from .NotificationActor import NotificationActor
 from .hmac_sha1 import make_digest
-from glycemiq_server import db
-from glycemiq_server.models import UserToken
 from glycemiq_server.config import config_as_dict
 from glycemiq_server.log_manager import logManager
 from glycemiq_server.actor_system_manager import actorSystemManager
@@ -22,7 +20,7 @@ server = OAuth2Server(config['CLIENT_ID'], config['CLIENT_SECRET'], config['AUTH
 
 @fitbit.route('/auth')
 def authorize():
-    url = server.browser_authorize()
+    url = server.get_authorize_url()
     return redirect(url)
 
 
@@ -37,8 +35,7 @@ def authorize_result():
     token = None
     if code:
         try:
-            token = server.fitbit.client.fetch_access_token(code)
-            _update_token(token)
+            token = server.fetch_access_token(code)
         except MissingTokenError:
             error = _fmt_failure(
                 'Missing access token parameter.</br>Please check that '
@@ -53,9 +50,8 @@ def authorize_result():
 
 @fitbit.route('/subscribe/<string:user_id>')
 def subscribe(user_id):
-    client_token = UserToken.query.filter_by(user_id=user_id).first()
-    server.set_fitbit_client(client_token, _update_token)
-    server.fitbit.subscription(user_id, '2')  # MAGIC STRING
+    server.set_fitbit_client(user_id)
+    server.subscribe(user_id)
     return "<h2>Success!</h2><p>You may close this window.</p>"
 
 
@@ -90,15 +86,3 @@ def _fmt_failure(message):
     tb = traceback.format_tb(sys.exc_info()[2])
     tb_html = '<pre>%s</pre>' % ('\n'.join(tb)) if tb else ''
     return """<h1>ERROR: %s</h1><br/><h3>You can close this window</h3>%s""" % (message, tb_html)
-
-
-def _update_token(token):
-    user_token = UserToken.query.filter_by(user_id=token['user_id']).first()
-    if user_token is None:
-        user_token = UserToken()
-        db.session.add(user_token)
-
-    for key in token.keys():
-        setattr(user_token, key, token[key])
-
-    db.session.commit()
