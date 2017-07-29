@@ -15,6 +15,8 @@ logger = logManager.get_logger(__name__)
 class NotificationActor(Actor):
     def __init__(self):
         super().__init__()
+        self.total_message_count = 0
+        self.children_done_count = 0
         self.children = {
             'foods': FoodActor,
             'activities': ActivityActor,
@@ -24,7 +26,9 @@ class NotificationActor(Actor):
 
     def receiveMessage(self, msg, sender):
         if isinstance(msg, ChildActorExited):
-            self.send(self, ActorExitRequest())
+            self.children_done_count += 1
+            if self.children_done_count == self.total_message_count:
+                self.send(self, ActorExitRequest())
             return
 
         if not isinstance(msg, list):
@@ -32,6 +36,7 @@ class NotificationActor(Actor):
 
         try:
             logger.debug(str(msg))
+            self.total_message_count = len(msg)
 
             for item in msg:
                 item['date'] = datetime.strptime(item['date'], "%Y-%m-%d").date()
