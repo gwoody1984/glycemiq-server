@@ -16,10 +16,10 @@ class SleepActor(FitbitDataActor):
         date = msg['date']
 
         self.server.set_fitbit_client(user_id)
-        data = self.server.get_heart_rate(user_id, date)
+        data = self.server.get_sleep(user_id, date)
 
-        self._save_activity(data)
+        self._save_sleep(user_id, date, data)
         self.send(self, ActorExitRequest())
 
-    def _save_activity(self, data):
+    def _save_sleep(self, user_id, date, data):
         logger.debug(str(data))

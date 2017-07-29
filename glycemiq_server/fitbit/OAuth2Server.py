@@ -78,15 +78,26 @@ class OAuth2Server:
     def get_activities(self, user_id, date):
         url = "{0}/{1}/user/{2}/activities/date/{date}.json".format(
             *self._fitbit._get_common_args(user_id),
-            date=date
+            date=self._fitbit._get_date_string(date)
         )
         return self._fitbit.make_request(url)
 
     def get_sleep(self, user_id, date):
-        return self._fitbit.time_series('sleep', user_id=user_id, end_date=date)
+        url = "{0}/1.2/user/{1}/sleep/date/{date}.json".format(
+            self._fitbit.API_ENDPOINT,
+            user_id,
+            date=self._fitbit._get_date_string(date)
+        )
+        return self._fitbit.make_request(url)
 
-    def get_heart_rate(self, user_id, date):
-        return self._fitbit.time_series('heart', user_id=user_id, end_date=date)
+    def get_bmi(self, user_id, date):
+        return self._fitbit.time_series('body/bmi', user_id=user_id, end_date=date)
+
+    def get_body_fat_percent(self, user_id, date):
+        return self._fitbit.time_series('body/fat', user_id=user_id, end_date=date)
+
+    def get_weight(self, user_id, date):
+        return self._fitbit.time_series('body/weight', user_id=user_id, end_date=date)
 
     def _update_token(self, token):
         user_token = UserToken.query.filter_by(user_id=token['user_id']).first()
