@@ -76,7 +76,11 @@ class OAuth2Server:
         return url
 
     def get_activities(self, user_id, date):
-        return self._fitbit.time_series('activities', user_id=user_id, end_date=date)
+        url = "{0}/{1}/user/{2}/activities/date/{date}.json".format(
+            *self._fitbit._get_common_args(user_id),
+            date=date
+        )
+        return self._fitbit.make_request(url)
 
     def get_sleep(self, user_id, date):
         return self._fitbit.time_series('sleep', user_id=user_id, end_date=date)
