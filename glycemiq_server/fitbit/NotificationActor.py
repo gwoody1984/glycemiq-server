@@ -32,10 +32,10 @@ class NotificationActor(Actor):
 
         try:
             logger.debug(str(msg))
-            msg['date'] = datetime.strptime(msg['date'], "%Y-%m-%d").date()
-            self._save_notification(msg)
 
             for item in msg:
+                item['date'] = datetime.strptime(item['date'], "%Y-%m-%d").date()
+                self._save_notification(item)
                 self._route_message(item)
         except Exception as e:
             logger.exception("Unknown error: {}".format(e))
