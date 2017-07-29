@@ -16,4 +16,4 @@ class FoodActor(FitbitDataActor):
             return
 
         logger.debug("ignoring food messages")
-        self.send(self, ActorExitRequest())
+        self.send(self.myAddress, ActorExitRequest())

@@ -28,7 +28,7 @@ class NotificationActor(Actor):
         if isinstance(msg, ChildActorExited):
             self.children_done_count += 1
             if self.children_done_count == self.total_message_count:
-                self.send(self, ActorExitRequest())
+                self.send(self.myAddress, ActorExitRequest())
             return
 
         if not isinstance(msg, list):
@@ -54,7 +54,7 @@ class NotificationActor(Actor):
     def _save_notification(self, msg):
         notification = Notification()
         notification.receive_date = datetime.utcnow()
-        notification.collection_Type = msg['collectionType']
+        notification.collection_type = msg['collectionType']
         notification.user_id = msg['ownerId']
         notification.date = msg['date']
         notification.owner_type = msg['ownerType']

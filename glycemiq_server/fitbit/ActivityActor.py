@@ -10,7 +10,6 @@ logger = logManager.get_logger(__name__)
 
 
 class ActivityActor(FitbitDataActor):
-
     def receiveMessage(self, msg, sender):
         if not isinstance(msg, dict):
             return
@@ -22,7 +21,7 @@ class ActivityActor(FitbitDataActor):
         data = self.server.get_activities(user_id, date)
 
         self._save_activity(user_id, date, data)
-        self.send(self, ActorExitRequest())
+        self.send(self.myAddress, ActorExitRequest())
 
     def _save_activity(self, user_id, date, data):
         logger.debug(str(data))
@@ -31,20 +30,19 @@ class ActivityActor(FitbitDataActor):
             logger.error("Expected dict, got {}".format(str(type(data))))
             return
 
-        summarySection = data['summary']
+        summary_section = data['summary']
 
         activity = Activity()
         activity.receive_date = datetime.utcnow()
         activity.user_id = user_id
         activity.date = date
-        activity.steps = summarySection['steps']
-        activity.restingHeartRate = summarySection['restingHeartRate']
-        activity.sedentaryMinutes = summarySection['sedentaryMinutes']
-        activity.lightlyActiveMinutes = summarySection['lightlyActiveMinutes']
-        activity.fairlyActiveMinutes = summarySection['fairlyActiveMinutes']
-        activity.veryActiveMinutes = summarySection['veryActiveMinutes']
-        activity.caloriesOut = summarySection['caloriesOut']
+        activity.steps = summary_section['steps']
+        activity.resting_heart_rate = summary_section['restingHeartRate']
+        activity.sedentary_minutes = summary_section['sedentaryMinutes']
+        activity.lightly_active_minutes = summary_section['lightlyActiveMinutes']
+        activity.fairly_active_minutes = summary_section['fairlyActiveMinutes']
+        activity.very_active_minutes = summary_section['veryActiveMinutes']
+        activity.calories_out = summary_section['caloriesOut']
 
         db.session.add(activity)
         db.session.commit()
-
