@@ -73,7 +73,7 @@ def notification():
     computed_sig = make_digest(request.get_data(), bytes(config['CLIENT_SECRET']+'&', 'UTF-8'))
     logger.debug('fitbit sig: %s; computed sig: %s', sig, computed_sig)
 
-    if (sig == computed_sig):
+    if sig == computed_sig:
         actor_sys = actorSystemManager.get_actor_system()
         actor = actor_sys.createActor(NotificationActor)
         actor_sys.tell(actor, request.json)
