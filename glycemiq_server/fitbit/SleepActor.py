@@ -39,7 +39,7 @@ class SleepActor(FitbitDataActor):
         sleep = SleepSummary()
         sleep.receive_date = datetime.utcnow()
         sleep.date = date
-        sleep.user_id = user_id
+        sleep.fitbit_user_id = user_id
         sleep.start_time = dateutil.parser.parse(sleep_summary['startTime'])
         sleep.end_time = dateutil.parser.parse(sleep_summary['endTime'])
         sleep.duration = sleep_summary['duration']

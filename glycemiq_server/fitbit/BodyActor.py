@@ -34,7 +34,7 @@ class BodyActor(FitbitDataActor):
 
         body = Body()
         body.date = date
-        body.user_id = user_id
+        body.fitbit_user_id = user_id
         body.bmi = float(bmi['value'])
         body.fat_percent = float(body_fat['value'])
         body.weight = float(weight['value'])

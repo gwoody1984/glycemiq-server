@@ -2,7 +2,7 @@ from datetime import datetime
 
 from thespian.actors import *
 
-from glycemiq_server.models import db, Notification
+from glycemiq_server.models import db, FitbitNotification
 from glycemiq_server.log_manager import logManager
 from glycemiq_server.fitbit.ActivityActor import ActivityActor
 from glycemiq_server.fitbit.BodyActor import BodyActor
@@ -52,10 +52,10 @@ class NotificationActor(Actor):
             self.send(child_actor, msg)
 
     def _save_notification(self, msg):
-        notification = Notification()
+        notification = FitbitNotification()
         notification.receive_date = datetime.utcnow()
         notification.collection_type = msg['collectionType']
-        notification.user_id = msg['ownerId']
+        notification.fitbit_user_id = msg['ownerId']
         notification.date = msg['date']
         notification.owner_type = msg['ownerType']
         notification.subscription_id = msg['subscriptionId']

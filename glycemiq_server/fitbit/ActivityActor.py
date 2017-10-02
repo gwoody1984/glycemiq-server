@@ -34,7 +34,7 @@ class ActivityActor(FitbitDataActor):
 
         activity = Activity()
         activity.receive_date = datetime.utcnow()
-        activity.user_id = user_id
+        activity.fitbit_user_id = user_id
         activity.date = date
         activity.steps = summary_section['steps']
         activity.resting_heart_rate = summary_section['restingHeartRate']
