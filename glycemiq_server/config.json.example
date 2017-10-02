@@ -15,5 +15,8 @@
     "CLIENT_SECRET": "",
     "AUTH_CALLBACK_URL": "",
     "SUBSCRIPTION_VERIFICATION_CODE": ""
+  },
+  "API": {
+    "TOKEN_SECRET_KEY": ""
   }
 }
