@@ -4,8 +4,8 @@ from thespian.actors import ActorSystem
 
 from glycemiq_server.config import config_as_obj
 
-
 db = SQLAlchemy()
+
 
 def create_app():
     app = Flask(__name__)
@@ -14,6 +14,8 @@ def create_app():
 
     from .fitbit import fitbit as fitbit_blueprint
     app.register_blueprint(fitbit_blueprint, url_prefix='/fitbit')
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint, url_prefix='/api')
 
     return app
 
