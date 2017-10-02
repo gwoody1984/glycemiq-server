@@ -13,28 +13,31 @@ class BodyActor(FitbitDataActor):
         if not isinstance(msg, dict):
             return
 
-        user_id = msg['ownerId']
+        fitbit_user_id = msg['ownerId']
+        glycemiq_user_id = msg['user']
         date = msg['date']
 
-        self.server.set_fitbit_client(user_id)
-        bmi_data = self.server.get_bmi(user_id, date)
-        body_fat_data = self.server.get_body_fat_percent(user_id, date)
-        weight_data = self.server.get_weight(user_id, date)
+        self.server.set_fitbit_client(fitbit_user_id)
+        bmi_data = self.server.get_bmi(fitbit_user_id, date)
+        body_fat_data = self.server.get_body_fat_percent(fitbit_user_id, date)
+        weight_data = self.server.get_weight(fitbit_user_id, date)
 
-        self._save_body_data(user_id, date,
+        self._save_body_data(fitbit_user_id, glycemiq_user_id, date,
                              bmi_data['body-bmi'][0],
                              body_fat_data['body-fat'][0],
                              weight_data['body-weight'][0])
         self.send(self.myAddress, ActorExitRequest())
 
-    def _save_body_data(self, user_id, date, bmi, body_fat, weight):
+    @staticmethod
+    def _save_body_data(fitbit_user_id, glycemiq_user_id, date, bmi, body_fat, weight):
         logger.debug('bmi: ' + str(bmi))
         logger.debug('body fat: ' + str(body_fat))
         logger.debug('weight: ' + str(weight))
 
         body = Body()
         body.date = date
-        body.fitbit_user_id = user_id
+        body.fitbit_user_id = fitbit_user_id
+        body.user_id = glycemiq_user_id
         body.bmi = float(bmi['value'])
         body.fat_percent = float(body_fat['value'])
         body.weight = float(weight['value'])

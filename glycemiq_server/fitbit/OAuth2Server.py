@@ -5,7 +5,6 @@ from glycemiq_server.models import FitbitToken
 
 
 class OAuth2Server:
-
     def __init__(self, client_id, client_secret, redirect_uri=None):
         """ Initialize the FitbitOauth2Client """
         self._client_id = client_id
@@ -99,7 +98,8 @@ class OAuth2Server:
     def get_weight(self, user_id, date):
         return self._fitbit.time_series('body/weight', user_id=user_id, end_date=date)
 
-    def _update_token(self, token):
+    @staticmethod
+    def _update_token(token):
         user_token = FitbitToken.query.filter_by(user_id=token['user_id']).first()
         if user_token is None:
             user_token = FitbitToken()

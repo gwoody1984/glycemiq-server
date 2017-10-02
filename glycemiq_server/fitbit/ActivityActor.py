@@ -14,16 +14,18 @@ class ActivityActor(FitbitDataActor):
         if not isinstance(msg, dict):
             return
 
-        user_id = msg['ownerId']
+        fitbit_user_id = msg['ownerId']
+        glycemiq_user_id = msg['user']
         date = msg['date']
 
-        self.server.set_fitbit_client(user_id)
-        data = self.server.get_activities(user_id, date)
+        self.server.set_fitbit_client(fitbit_user_id)
+        data = self.server.get_activities(fitbit_user_id, date)
 
-        self._save_activity(user_id, date, data)
+        self._save_activity(fitbit_user_id, glycemiq_user_id, date, data)
         self.send(self.myAddress, ActorExitRequest())
 
-    def _save_activity(self, user_id, date, data):
+    @staticmethod
+    def _save_activity(fitbit_user_id, glycemiq_user_id, date, data):
         logger.debug(str(data))
 
         if not isinstance(data, dict):
@@ -34,7 +36,8 @@ class ActivityActor(FitbitDataActor):
 
         activity = Activity()
         activity.receive_date = datetime.utcnow()
-        activity.fitbit_user_id = user_id
+        activity.fitbit_user_id = fitbit_user_id
+        activity.user_id = glycemiq_user_id
         activity.date = date
         activity.steps = summary_section['steps']
         activity.resting_heart_rate = summary_section['restingHeartRate']

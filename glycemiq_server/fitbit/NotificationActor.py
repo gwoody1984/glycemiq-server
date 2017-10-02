@@ -2,7 +2,7 @@ from datetime import datetime
 
 from thespian.actors import *
 
-from glycemiq_server.models import db, FitbitNotification
+from glycemiq_server.models import db, FitbitNotification, FitbitToken
 from glycemiq_server.log_manager import logManager
 from glycemiq_server.fitbit.ActivityActor import ActivityActor
 from glycemiq_server.fitbit.BodyActor import BodyActor
@@ -40,6 +40,14 @@ class NotificationActor(Actor):
 
             for item in msg:
                 item['date'] = datetime.strptime(item['date'], "%Y-%m-%d").date()
+                user_id = self._get_user_id(item['ownerId'])
+
+                if user_id is None:
+                    continue
+
+                # add user to the dict to send in messages
+                item['user'] = user_id
+
                 self._save_notification(item)
                 self._route_message(item)
         except Exception as e:
@@ -51,7 +59,8 @@ class NotificationActor(Actor):
             child_actor = self.createActor(child_type)
             self.send(child_actor, msg)
 
-    def _save_notification(self, msg):
+    @staticmethod
+    def _save_notification(msg):
         notification = FitbitNotification()
         notification.receive_date = datetime.utcnow()
         notification.collection_type = msg['collectionType']
@@ -62,3 +71,12 @@ class NotificationActor(Actor):
 
         db.session.add(notification)
         db.session.commit()
+
+    @staticmethod
+    def _get_user_id(fitbit_id):
+        token = FitbitToken.query.filter_by(fitbit_user_id=fitbit_id).first()
+        if not token:
+            logger.exception("Could not find token for user: {}".format(fitbit_id))
+            return None
+
+        return token.user_id
