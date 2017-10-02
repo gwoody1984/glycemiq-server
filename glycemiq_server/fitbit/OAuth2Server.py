@@ -1,7 +1,7 @@
 from fitbit.api import Fitbit
 
 from glycemiq_server import db
-from glycemiq_server.models import FitbitToken
+from glycemiq_db import FitbitToken
 
 
 class OAuth2Server:

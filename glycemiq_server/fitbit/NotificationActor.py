@@ -2,7 +2,7 @@ from datetime import datetime
 
 from thespian.actors import *
 
-from glycemiq_server.models import db, FitbitNotification, FitbitToken
+from glycemiq_db import db, FitbitNotification, FitbitToken
 from glycemiq_server.log_manager import logManager
 from glycemiq_server.fitbit.ActivityActor import ActivityActor
 from glycemiq_server.fitbit.BodyActor import BodyActor

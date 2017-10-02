@@ -2,7 +2,7 @@ from thespian.actors import ActorExitRequest
 
 from glycemiq_server.fitbit.FitbitDataActor import FitbitDataActor
 from glycemiq_server.log_manager import logManager
-from glycemiq_server.models import db, Body
+from glycemiq_db import db, Body
 
 logger = logManager.get_logger(__name__)
 

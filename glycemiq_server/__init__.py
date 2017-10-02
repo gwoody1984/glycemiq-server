@@ -1,10 +1,8 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from glycemiq_db import db
 from thespian.actors import ActorSystem
 
 from glycemiq_server.config import config_as_obj
-
-db = SQLAlchemy()
 
 
 def create_app():

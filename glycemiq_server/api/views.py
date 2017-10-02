@@ -7,7 +7,7 @@ from itsdangerous import URLSafeSerializer
 from glycemiq_server.api import api
 from glycemiq_server.log_manager import logManager
 from glycemiq_server.config import config_as_dict
-from glycemiq_server.models import db, BgReading, InsulinDose, Food, User
+from glycemiq_db import db, BgReading, InsulinDose, Food, User
 
 logger = logManager.get_logger(__name__)
 config = config_as_dict('API')
